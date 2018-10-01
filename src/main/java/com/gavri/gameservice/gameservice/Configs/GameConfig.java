@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-// configurate singelton of Dama model and instance of the game
+// configure 'singelton' of Data model and instance of the game
 @Configuration
 public class GameConfig {
 

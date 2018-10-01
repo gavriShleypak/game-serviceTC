@@ -1,5 +1,6 @@
 package com.gavri.gameservice.gameservice.DataModel;
 
+//Data model, representing the JSON file to send/receive
 public class GameDetailsDM  implements GameDetailsDMInterface{
 
     private char winner;

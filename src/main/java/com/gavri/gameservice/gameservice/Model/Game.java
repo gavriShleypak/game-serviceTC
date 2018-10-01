@@ -16,19 +16,27 @@ public class Game  implements GameInterface {
         int x = gameStatus.getX();
         int y = gameStatus.getY();
         char player = gameStatus.getCurrentPlayer();
+        if (gameStatus.getStatus().equals("NewGame")) {
+            startNewGame();
+        } else {
+            if (checkMove(x, y, player)) {
+                if (mBoard.IsWinner()) {
+                    gameStatus.setWinner(player);
+                }
+                gameStatus.setValidMove(true);
+                if(mBoard.isTie()){
+                    gameStatus.setStatus("Tie");
+                }
 
-        if(checkMove(x, y, player)){
-            if(mBoard.IsWinner()){
-                gameStatus.setWinner(player);
+            } else {
+                gameStatus.setValidMove(false);
             }
-            gameStatus.setValidMove(true);
-
         }
-        else{
-            gameStatus.setValidMove(false);
-        }
-
         return gameStatus;
+    }
+
+    private void startNewGame() {
+        mBoard = new Board();
     }
 
     private boolean checkMove(int x, int y, char player) {

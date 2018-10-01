@@ -8,7 +8,7 @@ public class Board {
     private Player.PlayerSign mPlayerToMove;
     private Player.PlayerSign mGameWinner;
     private boolean mGameIsComplete;
-
+    private int mEmptySquares = BOARD_SIZE * BOARD_SIZE;
 
     public Board(){
         mPlayerToMove = Player.PlayerSign.X;
@@ -37,24 +37,31 @@ public class Board {
         return mGameIsComplete;
     }
 // this method gets a coordinates
+
     public boolean InsertMove(int x, int y , Player.PlayerSign i_sign) {
+
+        boolean res = false;
 
         if (mPlayerToMove == i_sign) {
             if (mBoard[x][y].isEmpty()) {
                 mBoard[x][y].setSign(getCellSign(i_sign));
-            } else {
-                return false;
+
+
+                if (checkWinner(x, y, i_sign)) {
+                    setWinner(i_sign);
+                } else {
+                    NextMove();
+                }
+                /// send to the FE that someone win
+                mEmptySquares--;
+                res = true;
             }
-
-            checkWinner(x, y, i_sign);
-            NextMove();
-            /// send to the FE that someone win
-
-            return true;
         }
-        else{
-            return false;
-        }
+        return res;
+    }
+
+    public boolean isTie(){
+        return mEmptySquares == 0;
     }
 
     private void setWinner(Player.PlayerSign i_sign){
@@ -63,15 +70,9 @@ public class Board {
     }
 
     // for now i scan the board and return the right answer
-    public boolean checkWinner(int x , int y, Player.PlayerSign i_sign){
+    private boolean checkWinner(int x , int y, Player.PlayerSign i_sign){
 
-        if(isTInRow(x, i_sign) || isTInCol(y, i_sign) || isTInDiagonal(x, y, i_sign) ){
-            setWinner(i_sign);
-            return true;
-        }
-        else{
-            return false;
-        }
+        return isTInRow(x, i_sign) || isTInCol(y, i_sign) || isTInDiagonal(x, y, i_sign);
 
     }
 
@@ -94,12 +95,13 @@ public class Board {
     private boolean isTInDiagonal(int x, int y, Player.PlayerSign i_sign){
 
         Square.CellSign sign = getCellSign(i_sign);
+// check the second diagonal.
 
         if(x == y){
             return mBoard[0][0].getSign() == sign && mBoard[1][1].getSign() == sign && mBoard[2][2].getSign() == sign;
         }
         else{
-            return false;
+            return mBoard[0][2].getSign() == sign && mBoard[1][1].getSign() == sign && mBoard[2][0].getSign() == sign;
         }
     }
 
